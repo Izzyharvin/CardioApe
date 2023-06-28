@@ -1,0 +1,64 @@
+/*------------------------------------------------------------------
+[Master Stylesheet]
+
+Author: CardioApe
+Programmer: Breaking Limits Multimedia House LLC
+Version:	1.0
+
+This file contains the styling for the actual theme, this
+is the file you need to edit to change the look of the
+theme.
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+Table of contents
+
+    I.General
+    II.Page Preloader
+    III.Header & Navigation
+    IV.Image Section
+    V.About Section
+    VI.Games Section
+    VII.Team Section
+    VIII.Devlog Section
+    IX.Fourm Section
+    X.Footer
+    XI.404 Page
+    XII.Responsive Styles
+    XIII. Login Section
+
+-------------------------------------------------------------------*/
+
+/* --------------------------- /////////// I. GENERAL /////////// --------------------------- */
+/*-- Google Fonts --*/
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&display=swap');
+
+/*-- Variable CSS --*/
+:root {
+    --header-height: 3.5rem;
+
+    /*-- Colors --*/
+    --first-color: red;
+    --first-color-light: blue;
+    --first-color-alt: gray;
+    --first-color-dark: black;
+    --first-color-gray: yellow;
+    --title-color: green;
+    --title-color-black: brown;
+    --text-color: purple;
+    --text-color-light: orange;
+    --body-color: pink;
+
+    /*-- Font and Typography --*/
+    /*.5rem = 8px | 1rem = 16px*/
+    --body-font: 'Oswald', sans-serif;
+    --second-font: 'Caprasimo', cursive;
+    --biggest-font-size: 2rem;
+    --bigger-font-size: 1.5rem;
+    --big-font-size: 1.25rem;
+    --h1-font-size: 1.5rem;
+    --h2-font-size: 1.25rem;
+    --h3-font-size: 1rem;
+    --normal-font-size: 0.938rem;
+}
