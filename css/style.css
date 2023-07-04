@@ -37,194 +37,307 @@ Table of contents
 
 /*-- Variable CSS --*/
 :root {
-    --header-height: 3.5rem;
+  --header-height: 3.5rem;
 
-    /*-- Colors --*/
-    /* Colors mode HSL(hue, saturation, lightness) */
-    --first-color: hsl(79, 72%, 55%);
-    --first-color-light: hsl(79, 97%, 77%);
-    --first-color-alt: hsl(79, 67%, 52%);
-    --first-color-dark: hsl(79, 63%, 50%);
-    --first-color-gray: hsl(79, 6%, 64%);
-    --title-color: hsl(180, 4%, 98%);
-    --title-color-black: hsl(180, 4%, 12%);
-    --text-color: hsl(180, 4%, 72%);
-    --text-color-light: hsl(180, 4%, 65%);
-    --body-color: hsl(180, 12%, 8%);
+  /*-- Colors --*/
+  /* Colors mode HSL(hue, saturation, lightness) */
+  --first-color: hsl(79, 72%, 55%);
+  --first-color-light: hsl(79, 97%, 77%);
+  --first-color-alt: hsl(79, 67%, 52%);
+  --first-color-dark: hsl(79, 63%, 50%);
+  --first-color-gray: hsl(79, 6%, 64%);
+  --title-color: hsl(180, 4%, 98%);
+  --title-color-black: hsl(180, 4%, 12%);
+  --text-color: hsl(180, 4%, 72%);
+  --text-color-light: hsl(180, 4%, 65%);
+  --body-color: hsl(180, 12%, 8%);
 
-    /*-- Font and Typography --*/
-    /*.5rem = 8px | 1rem = 16px*/
-    --body-font: 'Oswald', sans-serif;
-    --second-font: 'Caprasimo', cursive;
-    --biggest-font-size: 2rem;
-    --bigger-font-size: 1.5rem;
-    --big-font-size: 1.25rem;
-    --h1-font-size: 1.5rem;
-    --h2-font-size: 1.25rem;
-    --h3-font-size: 1rem;
-    --normal-font-size: 0.938rem;
+  /*-- Font and Typography --*/
+  /*.5rem = 8px | 1rem = 16px*/
+  --body-font: 'Oswald', sans-serif;
+  --second-font: 'Caprasimo', cursive;
+  --biggest-font-size: 2rem;
+  --bigger-font-size: 1.5rem;
+  --big-font-size: 1.25rem;
+  --h1-font-size: 1.5rem;
+  --h2-font-size: 1.25rem;
+  --h3-font-size: 1rem;
+  --normal-font-size: 0.938rem;
 
-    /*-- Font Weight --*/
-    --font-bold: 700;
-    --font-black: 900;
+  /*-- Font Weight --*/
+  --font-bold: 700;
+  --font-black: 900;
 
-    /*-- Z Index --*/
-    --z-tootip: 10;
-    --z-fixed: 100;
+  /*-- Z Index --*/
+  --z-tootip: 10;
+  --z-fixed: 100;
 }
 
 /*-- Responsive Typography --*/
 @media screen and (min-width: 1024px) {
     :root {
-        --biggest-font-size: 6rem;
-        --bigger-font-size: 3.5rem;
-        --big-font-size: 2.75rem;
-        --h1-font-size: 2.25rem;
-        --h2-font-size: 1.5rem;
-        --h3-font-size: 1.25rem;
-        --normal-font-size: 1rem;
-        --small-font-size: .875rem;
-        --smaller-font-size: .813rem;
+      --biggest-font-size: 6rem;
+      --bigger-font-size: 3.5rem;
+      --big-font-size: 2.75rem;
+      --h1-font-size: 2.25rem;
+      --h2-font-size: 1.5rem;
+      --h3-font-size: 1.25rem;
+      --normal-font-size: 1rem;
+      --small-font-size: .875rem;
+      --smaller-font-size: .813rem;
     }
 }
 
 /*--------------------------- /////////// II. BASE /////////// ---------------------------*/
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+  
+html {
+  scroll-behavior: smooth;
+}
+
+body,
+button,
+input {
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+}
+
+body {
+  background-color: var(--body-color);
+  color: var(--text-color);
+}
+
+h1, h2, h3 {
+  color: var(--title-color);
+  font-weight: var(--font-bold);
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+  
+/*--------------------------- /////////// III. REUSABLE CSS CLASSES /////////// ---------------------------*/
+.container {
+  max-width: 1124px;
+  margin-right: 1.5rem;
+  margin-left: 1.5rem;
+}
+
+.section {
+  padding: 4.5rem 0 2rem;
+}
+
+.section__data {
+  display: flex;
+  flex-direction: column;
+  row-gap: .75rem;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section__title, 
+.section__title-border {
+  font-size: var(--big-font-size);
+  letter-spacing: 1.5px;
+}
+
+.section__subtitle {
+  font-size: var(--h2-font-size);
+  font-family: var(--second-font);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: var(--first-color);
+  transform: rotate(-2deg);
+}
+
+.section__titles {
+  display: flex;
+  column-gap: .75rem;
+  justify-content: center;
+}
+
+.section__title-border {
+  -webkit-text-stroke: 1px var(--text-color);
+  color: transparent;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.main {
+  overflow: hidden; /* For animation ScrollReveal */
+}
+
+.color-red {
+  color: hsl(0, 80%, 64%);
+}
+
+.color-green {
+  color: var(--first-color);
+}
+  
+/*---------------------------///////////  IV. HEADER & NAV /////////// ---------------------------*/
+.header {
+  width: 100%;
+  background-color: transparent;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-fixed);
+  transition: background .3s;
+}
+
+.nav {
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav__logo, .nav__toggle {
+  color: var(--title-color);
+  display: flex;
+}
+
+.nav__logo {
+  align-items: center;
+  column-gap: .5rem;
+  font-weight: var(--font-bold);
+}
+
+.nav__logo img {
+  width: 50px;
+  cursor: pointer;
+  padding-bottom: 20px;
+}
+
+@media screen and (max-width: 1023px){
+  .nav__menu {
+    position: fixed;
+    background-color: hsla(180, 12%, 8%, .8);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    top: 0;
+    right: -100%;
+    width: 80%;
+    height: 100%;
+    border-left: 2px solid var(--first-color-gray);
+    transition: right .3s;
   }
-  
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  body,
-  button,
-  input {
-    font-family: var(--body-font);
-    font-size: var(--normal-font-size);
-  }
-  
-  body {
-    background-color: var(--body-color);
-    color: var(--text-color);
-  }
-  
-  h1, h2, h3 {
-    color: var(--title-color);
-    font-weight: var(--font-bold);
-  }
-  
-  ul {
-    list-style: none;
-  }
-  
-  a {
-    text-decoration: none;
-  }
-  
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  /*--------------------------- /////////// III. REUSABLE CSS CLASSES /////////// ---------------------------*/
-  .container {
-    max-width: 1124px;
-    margin-right: 1.5rem;
-    margin-left: 1.5rem;
-  }
-  
-  .section {
-    padding: 4.5rem 0 2rem;
-  }
-  
-  .section__data {
-    display: flex;
-    flex-direction: column;
-    row-gap: .75rem;
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  
-  .section__title, 
-  .section__title-border {
-    font-size: var(--big-font-size);
-    letter-spacing: 1.5px;
-  }
-  
-  .section__subtitle {
-    font-size: var(--h2-font-size);
-    font-family: var(--second-font);
-    font-weight: 400;
-    letter-spacing: 1.5px;
-    color: var(--first-color);
-    transform: rotate(-2deg);
-  }
-  
-  .section__titles {
-    display: flex;
-    column-gap: .75rem;
-    justify-content: center;
-  }
-  
-  .section__title-border {
-    -webkit-text-stroke: 1px var(--text-color);
-    color: transparent;
-  }
-  
-  .grid {
-    display: grid;
-    gap: 1.5rem;
-  }
-  
-  .main {
-    overflow: hidden; /* For animation ScrollReveal */
-  }
-  
-  .color-red {
-    color: hsl(0, 80%, 64%);
-  }
-  
-  .color-green {
-    color: var(--first-color);
-  }
-  
-  /*---------------------------///////////  IV. HEADER & NAV /////////// ---------------------------*/
-  
-  
-  /*---------------------------/////////// V. SHOW MENU /////////// ---------------------------*/
-  
-  
-  /* Change background header */
-  
-  
-  /* Active link */
-  
-  
-  /*-- HOME --*/
-  
-  
-  /*-- BUTTON --*/
-  
-  
-  /*-- LOGOS --*/
-  
-  
-  /*-- PROGRAM --*/
-  
-  
-  /*-- CHOOSE --*/
-  
-  
-  /*-- PRICING --*/
-  
-  
-  /*-- CALCULATE --*/
-  
-  
-  /*-- FOOTER --*/
+}
+
+.nav__list {
+  padding: 5rem 0 0 3rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2.5rem;
+}
+
+.nav__link {
+  color: var(--title-color);
+  transition: color .3s;
+}
+
+.nav__link:hover {
+  color: var(--first-color);
+}
+
+.nav__close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--title-color);
+  cursor: pointer;
+}
+
+.nav__container {
+  padding-bottom: 20px;
+}
+
+/*---------------------------/////////// V. SHOW MENU /////////// ---------------------------*/
+.show-menu {
+  right: 0;
+}
+
+/* Change background header */
+
+
+/* Active link */
+
+
+/*-- HOME --*/
+
+
+/*-- BUTTON --*/
+
+
+/*-- LOGOS --*/
+
+
+/*-- PROGRAM --*/
+
+
+/*-- CHOOSE --*/
+
+
+/*-- PRICING --*/
+
+
+/*-- CALCULATE --*/
+
+
+/*---------------------------/////////// XV. FOOTER /////////// ---------------------------*/
+#footer {
+  width: 100%;
+  min-height: 70px;
+  height: auto;
+  background: #070707;
+  border-top: 2px solid #00fa04;
+  padding: 20px 0 0 0;
+  margin-top: 20px;
+}
+
+.social-links {
+  float: right;
+}
+
+.social-links li {
+  display: inline;
+  margin-left: 15px;
+}
+
+.social-links li a {
+  color: #FFF;
+}
+
+.social-links li a:hover {
+  color: #00fa04;
+}
+
+.social-links li a:focus {
+  color: #00fa04;
+}
+
+#copyright {
+  float: left;
+  font-family: 'Teko', sans-serif;
+}
   
   
   /*-- SCROLL BAR --*/
