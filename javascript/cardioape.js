@@ -125,45 +125,45 @@ const calculateBmi = (e) => {
 calculateForm.addEventListener('submit', calculateBmi)
 
 /* EMAIL JS */
-//const contactForm = document.getElementById('contact-form'),
-    //contactMessage = document.getElementById('contact-message'),
-    //contactUser = document.getElementById('contact-user')
+const contactForm = document.getElementById('contact-form'),
+    contactMessage = document.getElementById('contact-message'),
+    contactUser = document.getElementById('contact-user')
 
-//const sendEmail = (e) => {
-    //e.preventDefault()
+const sendEmail = (e) => {
+    e.preventDefault()
 
     //Check if the field has a value
-    //if(contactUser.value === '') {
+    if(contactUser.value === '') {
         //Add and remove color
-        //contactMessage.classList.remove('color-green')
-        //contactMessage.classList.add('color-red')
+        contactMessage.classList.remove('color-green')
+        contactMessage.classList.add('color-red')
 
         //Show message
-        //contactMessage.textContent = 'You must enter your email!'
+        contactMessage.textContent = 'You must enter your email!'
 
         //Remove message in three seconds
-        //setTimeout(() =>{
-            //contactMessage.textContent = ''
-        //}, 3000)
-    //} else (
+        setTimeout(() =>{
+            contactMessage.textContent = ''
+        }, 3000)
+    } else {
         //ServiceID - TemplateID - #form - publicKey
-        //emailjs.sendForm(serviceID, templateID, templateParams, publicKey);
-            //.then(() =>{
+        emailjs.sendForm('service_s9b7ig8', 'template_a4ylnfe', '#contact-form', 'GNBGx7tjiwCVFewcF')
+            .then(() =>{
                 //Show message and add color
-                //contactMessage.classList.add('color-green')
-                //contactMessage.textContent = 'You registered successfully!'
+                contactMessage.classList.add('color-green')
+                contactMessage.textContent = 'You registered successfully!'
 
                 //Remove after three seconds
-                //setTimeout(() =>{
-                    //contactMessage.textContent = ''
-                //}, 3000)
-           //}, (error) =>{
+                setTimeout(() =>{
+                    contactMessage.textContent = ''
+                }, 3000)
+           }, (error) =>{
                 //Mail sending error
-                //alert('Error! Something has failed!', error)
-            //})
+                alert('Error! Something has failed!', error)
+            })
         //To clear the input field
-        //contactUser.value = ''
-    //)
-//}
+        contactUser.value = ''
+    }
+}
 
-//contactForm.addEventListener('submit', sendEmail)
+contactForm.addEventListener('submit', sendEmail)
