@@ -968,6 +968,10 @@ img {
     padding: 7rem 0 0;
   }
 
+  .section__subtitle {
+    font-size: 2rem;
+  }
+
   .home__container {
     grid-template-columns: repeat(2, max-content);
     align-items: initial;
@@ -1104,5 +1108,37 @@ img {
 
   .choose__data {
     grid-template-columns: repeat(2, max-content);
+    gap: 2.5rem 8rem;
+  }
+
+  .choose__description {
+    width: 418px;
+    margin-bottom: 3.5rem;
+  }
+
+  .pricing__container {
+    padding-top: 3rem;
+    grid-template-columns: repeat(3, 320px);
+  }
+
+  .pricing__card {
+    padding: 2rem 3.5rem;
+    row-gap: 2.5rem;
+  }
+
+  .calculate__description {
+    width: 415px;
+  }
+
+  .calculate__form {
+    width: 505px;
+  }
+
+  .calculate__img {
+    width: 300px;
+  }
+
+  .scrollup {
+    right: 3rem;
   }
 }
