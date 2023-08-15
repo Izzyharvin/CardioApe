@@ -818,6 +818,44 @@ img {
   background-color: hsl(79, 4%, 35%);
 }
 
+/*---------------------------/////////// XIV. SERVICE PAGES /////////// ---------------------------*/
+.flex {
+  position: relative;
+  padding-bottom: 0;
+}
+
+.flex__container {
+  padding: 4rem;
+  row-gap: 3rem;
+}
+
+.flex-introduction{
+  text-align: center;
+}
+
+.flex {
+  padding: 0.3rem;
+  letter-spacing: 1.5px;
+}
+
+.flexmuscle__description {
+  margin-bottom: 2.5rem
+}
+
+.flex__title {
+  font-size: var(--h2-font-size);
+  font-family: var(--second-font);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: var(--first-color);
+  transform: rotate(-2deg);
+}
+
+.flex-img__container {
+  max-width: 100%;
+  height: auto; 
+}
+
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
 .scrollup{
   position: fixed;
