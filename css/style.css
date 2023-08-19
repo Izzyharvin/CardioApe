@@ -26,6 +26,8 @@ Table of contents
     XI. Pricing
     XII. Calculate
     XIII. Footer
+    XIV. Service Page
+    XV. About Us
 
 -------------------------------------------------------------------*/
 
@@ -818,31 +820,32 @@ img {
   background-color: hsl(79, 4%, 35%);
 }
 
-/*---------------------------/////////// XIV. SERVICE PAGES /////////// ---------------------------*/
-.flex {
-  position: relative;
-  padding-bottom: 0;
-}
-
-.flex__container {
-  padding: 4rem;
-  row-gap: 3rem;
-}
-
-.flex-introduction{
+.phone, .email {
   text-align: center;
 }
 
-.flex {
+/*---------------------------/////////// XIV. SERVICE PAGES /////////// ---------------------------*/
+.flex, .cardio, .yoga {
+  position: relative;
+  padding-bottom: 0;
   padding: 0.3rem;
   letter-spacing: 1.5px;
 }
 
-.flexmuscle__description {
+.flex__container, .cardio__container, .yoga__container {
+  padding: 4rem;
+  row-gap: 3rem;
+}
+
+.flex-introduction, .cardio-introduction, .yoga-introduction {
+  text-align: center;
+}
+
+.flexmuscle__description, .cardioexercise__description, .yogaexercise__description {
   margin-bottom: 2.5rem
 }
 
-.flex__title {
+.flex__title, .cardio__title, .yoga__title {
   font-size: var(--h2-font-size);
   font-family: var(--second-font);
   font-weight: 400;
@@ -851,9 +854,53 @@ img {
   transform: rotate(-2deg);
 }
 
-.flex-img__container {
+.flex-img__container, .cardio-img__container {
   max-width: 100%;
   height: auto; 
+}
+
+.flex__img, .cardio__img {
+  width: 400px;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/*---------------------------/////////// XV. ABOUT US /////////// ---------------------------*/
+.aboutus__container {
+  padding: 4rem;
+  row-gap: 3rem;
+}
+
+.aboutus-introduction {
+  text-align: center;
+}
+
+.aboutus {
+  position: relative;
+  padding-bottom: 0;
+  padding: 0.3rem;
+  letter-spacing: 1.5px;
+}
+
+.aboutus__description {
+  margin-bottom: 2.5rem
+}
+
+.cardioape-img__container {
+  max-width: 100%;
+  height: auto; 
+  margin-top: 5rem;
+}
+
+.us__title {
+  color: var(--first-color);
+}
+
+.subtitle {
+  font-weight: bold;
+  color: var(--first-color);
 }
 
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
