@@ -28,6 +28,7 @@ Table of contents
     XIII. Footer
     XIV. Service Page
     XV. About Us
+    XVI. Login
 
 -------------------------------------------------------------------*/
 
@@ -901,6 +902,98 @@ img {
 .subtitle {
   font-weight: bold;
   color: var(--first-color);
+}
+
+/*---------------------------/////////// XVI. Login /////////// ---------------------------*/
+.form{
+  width: 400px;
+  height: auto;
+  color: #fff;
+  font-family: 'roboto', sans-serif;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
+}
+
+.heading{
+  opacity: 0;
+  text-transform: capitalize;
+  text-align: center;
+  font-size: 80px;
+  font-weight: 300;
+  margin-bottom: 50px;
+}
+
+input,
+.submit-btn{
+  opacity: 0;
+  width: 80%;
+  height: 35px;
+  display: block;
+  margin: 20px auto;
+  border-radius: 5px;
+  background: rgb(99, 90, 90);
+  border: none;
+  color: #acabab;
+  padding: 15px;
+  transition: .5s;
+  text-transform: capitalize;
+}
+
+input::placeholder{
+  color: #fff;
+}
+
+input:focus,
+.submit-btn:hover{
+  background: #fff;
+  color: black;
+}
+
+input:focus::placeholder{
+  color: black;
+}
+
+.submit-btn{
+  width: auto;
+  padding: 0 20px;
+  cursor: pointer;
+  margin: 50px auto 0;
+  opacity: 0;
+}
+
+.link{
+  opacity: 0;
+  text-align: center;
+  text-transform: capitalize;
+  color: rgb(255, 255, 255);
+  display: block;
+  margin: 30px auto;
+}
+
+.link:hover{
+  color: #fff;
+}
+
+.alert-box{
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 150px;
+  max-width: 90%;
+  width: auto;
+  height: auto;
+  padding: 10px;
+  text-transform: capitalize;
+  background: rgb(255, 119, 119);
+  border-top: 10px solid rgb(255, 37, 37);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: #fff;
+  font-family: 'roboto', sans-serif;
+  text-align: center;
+  transition: 1s;
 }
 
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
