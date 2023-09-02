@@ -9,6 +9,7 @@
   "author": "Breaking Limits Multimedia House Services",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "connect-mongo": "^5.0.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
