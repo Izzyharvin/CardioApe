@@ -55,19 +55,15 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Register Route that will store data of user signup
-router.post('/signup', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = new User({ email, password });
-        await user.save();
-        res.status(201).send('User registered successfully');
-    } catch (error) {
-        res.status(400).send('Error during user registration');
-        console.error(error); // Log the error
-        res.status(500).send('Internal server error'); // Send a generic error message
+// Middleware to check if the user is authenticated
+function isAuthenticated(req, res, next) {
+    if (req.session && req.session.user) {
+        // User is authenticated, proceed to the next middleware/route handler
+        return next();
     }
-});
+    // User is not authenticated, redirect to the login page or handle it as needed
+    res.redirect('/login');
+}
 
 // Use the router middleware
 app.use(router);
@@ -111,7 +107,19 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-  
+// Register Route that will store data of user signup
+router.post('/signup', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = new User({ email, password });
+        await user.save();
+        res.status(201).send('User registered successfully');
+    } catch (error) {
+        res.status(400).send('Error during user registration');
+        console.error(error); // Log the error
+        res.status(500).send('Internal server error'); // Send a generic error message
+    }
+});
 
 app.post('/login', async (req, res) => {
     try {
@@ -146,26 +154,10 @@ app.get('/profile', isAuthenticated, (req, res) => {
     // Get user information from the session (or your database) and pass it to the profile page
     const user = req.session.user;
     res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+
+    // Redirect to the profile page after successful registration
+    res.redirect('/profile');
 });
-
-
-// Middleware to check if the user is authenticated
-function isAuthenticated(req, res, next) {
-    if (req.session && req.session.user) {
-        // User is authenticated, proceed to the next middleware/route handler
-        return next();
-    }
-    // User is not authenticated, redirect to the login page or handle it as needed
-    res.redirect('/login');
-}
-
-// Profile route - protected route (requires authentication)
-app.get('/profile', isAuthenticated, (req, res) => {
-    // Get user information from the session (or your database) and pass it to the profile page
-    const user = req.session.user;
-    res.sendFile(path.join(__dirname, 'public', 'profile.html')); // Send the profile.html file
-});
-
 
 
 // Listen to the Port that the server runs on
