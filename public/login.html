@@ -6,13 +6,13 @@
     <title>Cardio Ape</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="favicon/favicon.ico" type="image/icon">
+    <link rel="shortcut icon" href="/favicon/favicon.ico" type="image/icon">
 
     <!-- RemixIcon-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css\style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <!-- HEADER -->
@@ -64,16 +64,21 @@
             <div class="alert-box">
                 <p class="alert"></p>
             </div>
-        
-            <div class="form">
-                <h1 class="heading">login</h1>
-                <input type="email" placeholder="email" autocomplete="off" class="email" required>
-                <input type="password" placeholder="password" autocomplete="off" class="password" required>
-                <button class="submit-btn">log in</button>
-                <a href="signup.html" class="link">don't have an account? Register one</a>
-            </div>
+    
+            <!-- Add the <form> element here with action and method attributes -->
+            <form action="/login" method="POST">
+                <div class="form">
+                    <h1 class="heading">login</h1>
+                    <input type="email" name="email" placeholder="email" autocomplete="off" class="email" required>
+                    <input type="password" name="password" placeholder="password" autocomplete="off" class="password" required>
+                    <button type="submit" class="submit-btn">log in</button>
+                    <a href="signup.html" class="link">don't have an account? Register one</a>
+                </div>
+            </form>
+            <!-- End of the <form> element -->
         </section>
     </main>
+    
 
     <!-- FOOTER -->
     <footer class="footer section" id="footer">
@@ -181,13 +186,13 @@
     <!-- SCROLLREVEAL -->
     <script src="javascript/scrollreveal.min.js"></script>
 
+    <!-- MAIN JS -->
+    <script src="/javascript/cardioape.js"></script>
+
     <!-- EMAIL JS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
-    <!-- MAIN JS -->
-    <script src="javascript/cardioape.js"></script>
 
     <!-- Login JS -->
-    <script src="javascript/form.js"></script>
+    <!--<script src="/javascript/form.js"></script>-->
 </body>
 </html>

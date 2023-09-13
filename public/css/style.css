@@ -29,6 +29,7 @@ Table of contents
     XIV. Service Page
     XV. About Us
     XVI. Login
+    XVII.Customer Profile
 
 -------------------------------------------------------------------*/
 
@@ -919,7 +920,7 @@ img {
 }
 
 .heading{
-  opacity: 0;
+  opacity: 1;
   text-transform: capitalize;
   text-align: center;
   font-size: 80px;
@@ -929,7 +930,6 @@ img {
 
 input,
 .submit-btn{
-  opacity: 0;
   width: 80%;
   height: 35px;
   display: block;
@@ -939,7 +939,7 @@ input,
   border: none;
   color: #ffffff;
   padding: 15px;
-  transition: .5s;
+  transition: opacity 0.5s;
   text-transform: capitalize;
 }
 
@@ -962,16 +962,18 @@ input:focus::placeholder{
   padding: 0 20px;
   cursor: pointer;
   margin: 50px auto 0;
-  opacity: 0;
+  opacity: 1;
 }
 
 .link{
-  opacity: 0;
+  opacity: 1;
   text-align: center;
   text-transform: capitalize;
   color: rgb(255, 255, 255);
   display: block;
   margin: 30px auto;
+  text-decoration: underline; /* Add underline to the link */
+  color: blue; 
 }
 
 .link:hover{
@@ -1001,6 +1003,32 @@ input:focus::placeholder{
 
 .name, .password {
   text-align: center;
+}
+
+/* --------------------------- /////////// XVII.Customer Profile /////////// --------------------------- */
+.signup_section {
+  margin-top: 100px;
+  margin-left: 100px;
+}
+
+.profile {
+  text-align: center;
+}
+
+#profile-image {
+  width: 150px;
+  height: 150px;
+  border: 2px solid #ccc;
+  object-fit: cover;
+}
+
+#upload-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
