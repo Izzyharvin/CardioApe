@@ -1,15 +1,18 @@
 /* SHOW MENU */
-const navMenu = document.getElementById('nav-menu'),
-    navToggle = document.getElementById('nav-toggle'),
-    navClose = document.getElementById('nav-close')
+const navToggle = document.getElementById('nav-toggle');
+const navClose = document.getElementById('nav-close');
 
 /* MENU SHOW */
 /* Validate if constant exists */
-if(navToggle){
-    navToggle.addEventListener('click', () =>{
-        navMenu.classList.add('show-menu')
-    })
+if (navToggle) {
+    navToggle.addEventListener('click', () => {
+        const navMenu = document.getElementById('nav-menu');
+        if (navMenu) {
+            navMenu.classList.add('show-menu');
+        }
+    });
 }
+
 
 /* MENU HIDDEN */
 /* Validate if constant exists */
@@ -41,22 +44,26 @@ window.addEventListener('scroll', scrollHeader)
 /* SCROLL SECTIONS ACTIVE LINK */
 const sections = document.querySelectorAll('section[id]')
     
-const scrollActive = () =>{
-  	const scrollY = window.pageYOffset
+const scrollActive = () => {
+    const scrollY = window.pageYOffset;
 
-	sections.forEach(current =>{
-		const sectionHeight = current.offsetHeight,
-			  sectionTop = current.offsetTop - 58,
-			  sectionId = current.getAttribute('id'),
-			  sectionsClass = document.querySelector('.nav__menu a[href*=' + sectionId + ']')
+    sections.forEach(current => {
+        const sectionHeight = current.offsetHeight,
+            sectionTop = current.offsetTop - 58,
+            sectionId = current.getAttribute('id'),
+            sectionsClass = document.querySelector('.nav__menu a[href*=' + sectionId + ']');
 
-		if(scrollY > sectionTop && scrollY <= sectionTop + sectionHeight){
-			sectionsClass.classList.add('active-link')
-		}else{
-			sectionsClass.classList.remove('active-link')
-		}                                                    
-	})
-}
+        // Check if sectionsClass exists before working with it
+        if (sectionsClass) {
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                sectionsClass.classList.add('active-link');
+            } else {
+                sectionsClass.classList.remove('active-link');
+            }
+        }
+    });
+};
+
 window.addEventListener('scroll', scrollActive)
 
 /* SHOW SCROLL UP */ 
@@ -83,60 +90,64 @@ sr.reveal('.choose__img, .calculate__content', {origin: 'left'})
 sr.reveal('.choose__content, .calculate__image', {origin: 'right'})
 
 /* CALCULATE JS */
-const calculateForm = document.getElementById('calculate-form'),
-    calculateCm = document.getElementById('calculate-cm'),
-    calculateKg = document.getElementById('calculate-kg'),
-    calculateMessage = document.getElementById('calculate-message')
+// Check if the current page is the homepage
+if (window.location.pathname === '/homepage.html') {
+    const calculateForm = document.getElementById('calculate-form');
+    const calculateCm = document.getElementById('calculate-cm');
+    const calculateKg = document.getElementById('calculate-kg');
+    const calculateMessage = document.getElementById('calculate-message');
 
-const calculateBmi = (e) => {
-    e.preventDefault()
+    const calculateBmi = (e) => {
+        e.preventDefault();
 
-    //Check if the fields have a value
-    if(calculateCm.value === '' || calculateKg.value === '') {
-        //Add and remove color
-        calculateMessage.classList.remove('color-green')
-        calculateMessage.classList.add('color-red')
+        // Check if the fields have a value
+        if (calculateCm.value === '' || calculateKg.value === '') {
+            // Add and remove color
+            calculateMessage.classList.remove('color-green');
+            calculateMessage.classList.add('color-red');
 
-        //Show Message
-        calculateMessage.textContent = 'Fill in the Height and Weight'
+            // Show Message
+            calculateMessage.textContent = 'Fill in the Height and Weight';
 
-        //Remove Message three seconds
-        setTimeout(() => {
-            calculateMessage.textContent = ''
-        }, 3000)
-    } else {
-        //BMI Formula
-        const cm = calculateCm.value / 100,
-            kg = calculateKg.value,
-            bmi = Math.round(kg / (cm * cm))
-        //Show your health status
-        if(bmi < 18.5) {
-            //Add color and display message
-            calculateMessage.classList.add('color-green')
-            calculateMessage.textContent = `Your BMI is ${bmi} and you are skinny`
-        } else if(bmi < 25) {
-            calculateMessage.classList.add('color-green')
-            calculateMessage.textContent = `Your BMI is ${bmi} and you are healthy`
+            // Remove Message after three seconds
+            setTimeout(() => {
+                calculateMessage.textContent = '';
+            }, 3000);
         } else {
-            calculateMessage.classList.add('color-green')
-            calculateMessage.textContent = `Your BMI is ${bmi} and you are overweight`
+            // BMI Formula
+            const cm = calculateCm.value / 100;
+            const kg = calculateKg.value;
+            const bmi = Math.round(kg / (cm * cm));
+
+            // Show your health status
+            if (bmi < 18.5) {
+                // Add color and display message
+                calculateMessage.classList.add('color-green');
+                calculateMessage.textContent = `Your BMI is ${bmi} and you are skinny`;
+            } else if (bmi < 25) {
+                calculateMessage.classList.add('color-green');
+                calculateMessage.textContent = `Your BMI is ${bmi} and you are healthy`;
+            } else {
+                calculateMessage.classList.add('color-green');
+                calculateMessage.textContent = `Your BMI is ${bmi} and you are overweight`;
+            }
+
+            // To clear the input field
+            calculateCm.value = '';
+            calculateKg.value = '';
+
+            // Remove message in seconds
+            setTimeout(() => {
+                calculateMessage.textContent = '';
+            }, 4000);
         }
+    };
 
-        //To clear the input field
-        calculateCm.value = ''
-        calculateKg.value = ''
-
-        //Remove message in secinds
-        setTimeout(() =>{
-            calculateMessage.textContent = ''
-        }, 4000)
-    }
+    calculateForm.addEventListener('submit', calculateBmi);
 }
 
-calculateForm.addEventListener('submit', calculateBmi)
-
 /* EMAIL JS */
-const contactForm = document.getElementById('contact-form'),
+/* const contactForm = document.getElementById('contact-form'),
     contactMessage = document.getElementById('contact-message'),
     contactUser = document.getElementById('contact-user')
 
@@ -177,4 +188,4 @@ const sendEmail = (e) => {
     }
 }
 
-contactForm.addEventListener('submit', sendEmail)
+contactForm.addEventListener('submit', sendEmail) */
