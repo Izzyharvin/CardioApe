@@ -1007,12 +1007,14 @@ input:focus::placeholder{
 
 /* --------------------------- /////////// XVII.Customer Profile /////////// --------------------------- */
 .signup_section {
-  margin-top: 100px;
-  margin-left: 100px;
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
 }
 
-.profile {
-  text-align: center;
+.profile-container {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center items horizontally */
 }
 
 #profile-image {
@@ -1029,6 +1031,11 @@ input:focus::placeholder{
   color: #fff;
   cursor: pointer;
   border-radius: 5px;
+  margin-top: 10px; /* Add space between image and button */
+}
+
+.left-content {
+  margin: 100px;
 }
 
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
