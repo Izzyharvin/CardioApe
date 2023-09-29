@@ -1,24 +1,25 @@
 /* SHOW MENU */
 const navToggle = document.getElementById('nav-toggle');
 const navClose = document.getElementById('nav-close');
+const navMenu = document.getElementById('nav-menu');
 
 /* MENU SHOW */
 /* Validate if constant exists */
 if (navToggle) {
     navToggle.addEventListener('click', () => {
-        const navMenu = document.getElementById('nav-menu');
         if (navMenu) {
             navMenu.classList.add('show-menu');
         }
     });
 }
 
-
 /* MENU HIDDEN */
 /* Validate if constant exists */
 if(navClose){
     navClose.addEventListener('click', () =>{
-        navMenu.classList.remove('show-menu')
+        if (navMenu) {
+            navMenu.classList.remove('show-menu');
+        }
     })
 }
 
@@ -98,7 +99,10 @@ if (window.location.pathname === '/homepage.html') {
     const calculateMessage = document.getElementById('calculate-message');
 
     const calculateBmi = (e) => {
+        // Prevent form submission
         e.preventDefault();
+
+        console.log('BMI calculation function executed.');
 
         // Check if the fields have a value
         if (calculateCm.value === '' || calculateKg.value === '') {
@@ -119,17 +123,28 @@ if (window.location.pathname === '/homepage.html') {
             const kg = calculateKg.value;
             const bmi = Math.round(kg / (cm * cm));
 
+            console.log(`Calculated BMI: ${bmi}`);
+
             // Show your health status
             if (bmi < 18.5) {
                 // Add color and display message
+                console.log('Skinny');
                 calculateMessage.classList.add('color-green');
                 calculateMessage.textContent = `Your BMI is ${bmi} and you are skinny`;
+                // Make the element visible
+                calculateMessage.style.display = 'block';
             } else if (bmi < 25) {
+                console.log('Healthy');
                 calculateMessage.classList.add('color-green');
                 calculateMessage.textContent = `Your BMI is ${bmi} and you are healthy`;
+                // Make the element visible
+                calculateMessage.style.display = 'block';
             } else {
+                console.log('Overweight');
                 calculateMessage.classList.add('color-green');
                 calculateMessage.textContent = `Your BMI is ${bmi} and you are overweight`;
+                // Make the element visible
+                calculateMessage.style.display = 'block';
             }
 
             // To clear the input field
