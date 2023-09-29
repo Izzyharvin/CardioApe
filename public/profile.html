@@ -60,20 +60,66 @@
     <!-- MAIN -->
     <main class="main">
         <!-- HOME -->
-        <section class="signup_section" id="signup">
+        <section class="profile_section" id="profile">
             <div class="left-content">
-                <div class="profile">
-                    <img id="profile-image" src="/images/default_profilepic.jpg" alt="Profile Picture">
-                </div>
-                
-                <input type="file" id="file-input" accept="image/*" style="display: none;">
-                <label for="file-input" id="upload-label">Change Profile Picture</label>
+                <div class="profile-container">
+                    <div class="profile">
+                        <img id="profile-image" src="/images/default_profilepic.jpg" alt="Profile Picture">
+                    </div>
+                    
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                    <label for="file-input" id="upload-label">Change Profile Picture</label>
 
-                <h1>Welcome to Your Profile</h1>
-                <!-- Display user information here -->
-                
-                <a href="/logout">Logout</a>
+                    <h1>Welcome to Your Profile</h1>
+                    <!-- Display user information here -->
+                    
+                    <a href="/login" id="logout-link">Logout</a>
+                </div>
+
+                <div class="calender-container">
+                    <div class="hr__calender" id="hr-calender">
+                        <!-- Calendly link widget begin -->
+                        <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+                        <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+                        <a href="" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/cardioape/1-hour-workout-session'});return false;">Schedule 1-Hour Workout Session</a>
+                        <!-- Calendly link widget end -->
+                    </div>
+                    
+                    <div class="twohr__calender" id="twohr-calender">
+                        <!-- Calendly link widget begin -->
+                        <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+                        <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+                        <a href="" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/cardioape/2-hour-workout-session'});return false;">Schedule 2-Hour Workout Session</a>
+                        <!-- Calendly link widget end -->
+                    </div>
+
+                    <div class="threehr__calender" id="threehr-calender">
+                        <!-- Calendly link widget begin -->
+                        <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+                        <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+                        <a href="" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/cardioape/3-hour-workout-session'});return false;">Schedule 3-Hour Workout Session</a>
+                        <!-- Calendly link widget end -->
+                    </div>
+                </div>
             </div>
+            
+            <!--Subscription Section -->
+            <div id="subscription-section">
+                <h1 class="content-title">Welcome to your Exercise Content!</h1>
+                <!-- Video Section -->
+                <div id="video-section">
+                    <video controls>
+                        <source src="/videos/cows (1080p).mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Non-Subscription Section (Hidden by Default) -->
+            <div id="non-subscription-section" style="display: none;">
+                <p>Sorry, this section is only available to subscribed users.</p>
+            </div>
+
         </section>
     </main>
 
@@ -194,5 +240,45 @@
 
     <!-- Profile Pic JS -->
     <script src="/javascript/profilepic.js"></script>
+
+    <!-- Subscription Videos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Fetch the user's subscription status from the server
+            const response = await fetch('/profile');
+            const data = await response.json();
+            const isSubscribed = data.isSubscribed;
+    
+            // Check the subscription status and add the subscription section conditionally
+            const subscriptionSection = document.getElementById('subscription-section');
+            if (isSubscribed) {
+                // User is subscribed, so add the subscription section
+                subscriptionSection.innerHTML = `
+                    <!-- Your subscription content here -->
+                    <h2>Subscription Content</h2>
+                    <p>Welcome to the premium section with exclusive content!</p>
+                    <!-- Add your subscription videos, etc. here -->
+                `;
+            } else {
+                // User is not subscribed, so you can hide or show a message
+                subscriptionSection.innerHTML = `
+                    <p>You are not subscribed. Subscribe to access premium content.</p>
+                    <a href="/pricing">Subscribe Now</a>
+                `;
+            }
+        });
+    </script>
+
+    <!-- Listen to Login -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = `<%= JSON.stringify(req.session.isLoggedIn) %>`;
+     
+            if (!isLoggedIn) {
+                // If the user is not logged in, redirect to the login page
+                window.location.href = '/login';
+            }
+        });
+    </script>  
 </body>
 </html>

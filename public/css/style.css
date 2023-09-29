@@ -25,7 +25,7 @@ Table of contents
     X. Choose
     XI. Pricing
     XII. Calculate
-    XIII. Footer
+    XIII. Footer and Register
     XIV. Service Page
     XV. About Us
     XVI. Login
@@ -701,6 +701,7 @@ img {
 .calculate__message {
   position: absolute;
   transform: translateY(1rem);
+  display: none; /* Initially hide the element */
 }
 
 /*---------------------------/////////// XIII. FOOTER /////////// ---------------------------*/
@@ -905,18 +906,16 @@ img {
   color: var(--first-color);
 }
 
-/*---------------------------/////////// XVI. Login /////////// ---------------------------*/
+/*---------------------------/////////// XVI. Login and Register /////////// ---------------------------*/
 .form{
   width: 400px;
-  height: auto;
   color: #fff;
   font-family: var(--body-font);
-  margin: auto;
-  width: 50%;
+  margin: 100px;
   border: 3px solid red;
   padding: 10px;
-  margin-top: 20%;
-  margin-bottom: 20%;
+  margin-top: 10rem;
+  margin-left: 13rem;
 }
 
 .heading{
@@ -1013,15 +1012,18 @@ input:focus::placeholder{
 
 .profile-container {
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  align-items: center; /* Center items horizontally */
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 50px; /* Adjust margin as needed */
 }
 
-#profile-image {
+.profile-container .profile img {
   width: 150px;
   height: 150px;
   border: 2px solid #ccc;
   object-fit: cover;
+  margin-bottom: 10px; /* Add space between image and other elements */
 }
 
 #upload-label {
@@ -1031,11 +1033,37 @@ input:focus::placeholder{
   color: #fff;
   cursor: pointer;
   border-radius: 5px;
-  margin-top: 10px; /* Add space between image and button */
+  margin-top: 10px; /* Add space between the label and text */
 }
 
 .left-content {
   margin: 100px;
+}
+
+.calender-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Create 3 equal columns */
+  gap: 20px; /* Add space between columns */
+  margin-top: 3rem;
+}
+
+/* Style for each Calendly widget container */
+.calender-container > div {
+  text-align: center; /* Center the content within each column */
+  padding: 20px; /* Add padding to the widget containers */
+  border: 1px solid #ccc; /* Add a border for separation */
+}
+
+.hr__calender, .twohr__calender, .threehr__calender {
+  background-color: var(--first-color-light); /* Choose your background color */
+  padding: 5px 10px; /* Add padding for better appearance */
+  border-radius: 5px; /* Rounded corners for a button-like look */
+  text-decoration: none; /* Remove underlines from links */
+}
+
+.calender-container a:hover {
+  background-color: var(--first-color); /* Change background color on hover */
+  color: white; /* Change text color on hover */
 }
 
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
@@ -1095,6 +1123,23 @@ input:focus::placeholder{
 
   .footer__content {
     grid-template-columns: 1fr;
+  }
+
+  .calender-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content-title {
+    margin-left: 20px;
+  }
+
+  #video-section video {
+    max-width: 100%;
+    max-height: auto;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }
 
@@ -1160,6 +1205,20 @@ input:focus::placeholder{
 
   .footer__content {
     grid-template-columns: repeat(3, max-content);
+  }
+
+  .content-title {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-bottom: 40px;
+  }
+
+  #video-section video {
+    max-width: 100%;
+    max-height: auto;
+    padding-left: 50px;
+    padding-right: 50px;
   }
 }
 
@@ -1263,6 +1322,13 @@ input:focus::placeholder{
 
   .footer__social {
     order: 1;
+  }
+
+  #video-section video {
+    max-width: 100%;
+    max-height: auto;
+    padding-left: 50px;
+    padding-right: 50px;
   }
 }
 
