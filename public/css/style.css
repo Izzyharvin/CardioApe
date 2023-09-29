@@ -1124,6 +1124,23 @@ input:focus::placeholder{
   .footer__content {
     grid-template-columns: 1fr;
   }
+
+  .calender-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content-title {
+    margin-left: 20px;
+  }
+
+  #video-section video {
+    max-width: 100%;
+    max-height: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 /* For medium devices */
@@ -1188,6 +1205,20 @@ input:focus::placeholder{
 
   .footer__content {
     grid-template-columns: repeat(3, max-content);
+  }
+
+  .content-title {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-bottom: 40px;
+  }
+
+  #video-section video {
+    max-width: 100%;
+    max-height: auto;
+    padding-left: 50px;
+    padding-right: 50px;
   }
 }
 
@@ -1291,6 +1322,13 @@ input:focus::placeholder{
 
   .footer__social {
     order: 1;
+  }
+
+  #video-section video {
+    max-width: 100%;
+    max-height: auto;
+    padding-left: 50px;
+    padding-right: 50px;
   }
 }
 
