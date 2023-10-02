@@ -161,19 +161,47 @@ const User = mongoose.model('User', userSchema);
 app.use(router);
 
 
+app.get('/data', (req, res) => {
+    // Check the 'Accept' header
+    const acceptHeader = req.get('Accept');
+  
+    // Handle JSON requests
+    if (acceptHeader.includes('application/json')) {
+      const jsonData = { message: 'This is JSON data.' };
+      res.json(jsonData);
+    }
+    // Handle HTML requests
+    else if (acceptHeader.includes('text/html')) {
+      const htmlResponse = '<html><body><h1>This is an HTML response.</h1></body></html>';
+      res.send(htmlResponse);
+    }
+    // Handle other content types or unsupported requests
+    else {
+      res.status(406).send('Not Acceptable');
+    }
+});
+
 app.get('/', (req, res) => {
+    // Set a cookie with SameSite=None and Secure flag
+    res.cookie('myCookie', 'cookieValue', {
+      sameSite: 'None',
+      secure: true, // Only send over HTTPS
+    });
+  
+    // Serve your homepage.html file
     res.sendFile(path.join(__dirname, 'public', 'homepage.html'));
 });
 
 app.get('/profile', isAuthenticated, async (req, res) => {
     try {
+        console.log('Request received for /profile');
+
         // Check the user's subscription status in your database
         const userId = req.user.id; // Replace with your authentication logic
         const isSubscribed = await checkSubscriptionStatus(userId); // Implement this function
-
-        // Set the Content-Type header to indicate that it's an HTML document
+        
+        // Set the Content-Type header to indicate HTML response
         res.setHeader('Content-Type', 'text/html');
-
 
         // Log whether the user is subscribed or not
         if (isSubscribed) {
@@ -182,8 +210,17 @@ app.get('/profile', isAuthenticated, async (req, res) => {
             console.log('User is not subscribed');
         }
 
-        // Assuming profile.html is in the 'public' folder
-        res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+        // Parse the Accept header to determine the client's preferred content type
+        const acceptHeader = req.get('Accept');
+
+        // Check if the client prefers JSON or has no specific preference (default to HTML)
+        if (acceptHeader.includes('application/json')) {
+            // Respond with JSON data
+            res.json({ isSubscribed }); // You can include other data as needed
+        } else {
+            // Respond with HTML content (assuming profile.html is in the 'public' folder)
+            res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+        }
     } catch (error) {
         console.error('Error in /profile route:', error);
         res.status(500).json({ message: 'Internal server error' });
