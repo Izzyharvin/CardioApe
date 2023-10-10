@@ -61,7 +61,11 @@
         <!-- HOME -->
         <section class="login_section" id="login">
             <div class="alert-box">
-                <p class="alert"></p>
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger" role="alert">
+                      <%= messages.error[0] %>
+                    </div>
+                <% } %> 
             </div>
     
             <!-- Add the <form> element here with action and method attributes -->
@@ -189,7 +193,7 @@
     <script src="/javascript/cardioape.js"></script>
 
     <!-- EMAIL JS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script> -->
 
     <!-- Login JS -->
     <!--<script src="/javascript/form.js"></script>-->

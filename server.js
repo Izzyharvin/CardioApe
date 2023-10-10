@@ -4,12 +4,14 @@ const app = express();
 const router = express.Router();
 const path = require('path');
 const bcrypt = require('bcrypt');
+const flash = require('express-flash');
 const session = require('express-session');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoDBStore = require('connect-mongodb-session')(session);
+const config = require('./config/config.js'); // Use forward slashes
 
 
 
@@ -28,6 +30,16 @@ app.use(
       store: store, // Use the MongoDB store for sessions
     })
 );
+
+app.use(flash());
+
+app.set('view engine', 'ejs'); // Set EJS as the view engine
+app.set('views', path.join(__dirname, 'views')); // Specify the directory where your views are located
+
+const stripe = require('stripe')(config.stripe.secretKey);
+
+// Parse JSON payloads from Stripe webhooks
+app.use('/stripe-webhook', bodyParser.raw({ type: 'application/json' }));
 
 // Initialize Passport.js
 app.use(passport.initialize());
@@ -116,7 +128,7 @@ app.use(express.urlencoded());
 app.use(express.static('public'));
 
 // Serve static files from the 'public' directory
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const uri = "mongodb+srv://dustinharp:CardioApe2023@cluster1.85j138f.mongodb.net/?retryWrites=true&w=majority";
 
@@ -136,6 +148,7 @@ async function connect() {
 }
 
 async function checkSubscriptionStatus(userId) {
+    console.log('Checking subscription status for userId:', userId);
     try {
         const user = await UserData.findById(userId);
         if (!user) {
@@ -149,8 +162,6 @@ async function checkSubscriptionStatus(userId) {
     }
 }
 
-connect();
-
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -161,29 +172,225 @@ const User = mongoose.model('User', userSchema);
 app.use(router);
 
 
+// Import Stripe and configure it with your secret key
+const stripeInstance = require('stripe')(config.stripe.secretKey);
+
+// Define a function to retrieve the user's subscription status
+async function checkSubscriptionStatus(email) {
+    try {
+      // Retrieve the customer from Stripe using the email as a unique identifier
+      const customers = await stripe.customers.list({
+        email: email,
+        limit: 1,
+      });
+  
+      // Check if a customer with the given email exists in Stripe
+      if (customers.data.length === 1) {
+        // Customer found, now retrieve their subscription status
+        const customer = customers.data[0];
+  
+        // Check if the customer has an active subscription
+        if (customer.subscriptions.data.length > 0 && customer.subscriptions.data[0].status === 'active') {
+          console.log('User is subscribed.');
+          // Show or enable content for subscribed users
+          return true; // Return true for subscribed users
+        } else {
+          console.log('User is not subscribed.');
+          // Display a message or alternative content for non-subscribed users
+          return false; // Return false for non-subscribed users
+        }
+      } else {
+        console.log('User is not found in Stripe.');
+        // Handle the case where the user is not found in Stripe
+        return false; // Return false for users not found in Stripe
+      }
+    } catch (error) {
+      console.error('Error checking subscription status:', error);
+      return false; // Return false in case of an error
+    }
+}
+
+app.post('/stripe-webhook', async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+  
+    try {
+        event = stripeInstance.webhooks.constructEvent(req.body, sig, config.stripe.webhookSecret);
+    } catch (err) {
+        console.error('Webhook signature verification failed.', err);
+        return res.status(400).end();
+    }
+  
+    // Declare customerId outside the switch statement
+    let customerId;
+  
+    // Handle the event based on its type
+    switch (event.type) {
+      case 'customer.subscription.created':
+        // Extract the customer ID from the subscription event
+        customerId = event.customer;
+  
+        try {
+          // Find the user in your database by their customer ID
+          const user = await UserData.findOne({ customerId });
+  
+          if (user) {
+            // Update the user's subscription status to true
+            user.subscriptionStatus = true;
+  
+            // Save the updated user record back to the database
+            await user.save();
+  
+            console.log(`Subscription created for user with customerId: ${customerId}`);
+          } else {
+            console.log(`User not found for customerId: ${customerId}`);
+          }
+        } catch (error) {
+          console.error('Error handling subscription created event:', error);
+        }
+        break;
+      case 'customer.subscription.updated':
+        // Extract the customer ID and new subscription status from the event
+        customerId = event.customer;
+        const newSubscriptionStatus = event.data.object.status === 'active'; // Adjust this based on Stripe's status values
+  
+        try {
+          // Find the user in your database by their customer ID
+          const user = await UserData.findOne({ customerId });
+  
+          if (user) {
+            // Update the user's subscription status based on the new status
+            user.subscriptionStatus = newSubscriptionStatus;
+  
+            // Save the updated user record back to the database
+            await user.save();
+  
+            console.log(`Subscription updated for user with customerId: ${customerId}`);
+          } else {
+            console.log(`User not found for customerId: ${customerId}`);
+          }
+        } catch (error) {
+          console.error('Error handling subscription updated event:', error);
+        }
+        break;
+      case 'customer.subscription.deleted':
+        // Extract the customer ID from the event
+        customerId = event.customer;
+  
+        try {
+          // Find the user in your database by their customer ID
+          const user = await UserData.findOne({ customerId });
+  
+          if (user) {
+            // Update the user's subscription status to indicate they are no longer subscribed
+            user.subscriptionStatus = false;
+  
+            // Save the updated user record back to the database
+            await user.save();
+  
+            console.log(`Subscription deleted for user with customerId: ${customerId}`);
+          } else {
+            console.log(`User not found for customerId: ${customerId}`);
+          }
+        } catch (error) {
+          console.error('Error handling subscription deleted event:', error);
+        }
+        break;
+      default:
+        // Handle other webhook events or ignore them
+    }
+  
+    // Return a 200 OK response to acknowledge receipt of the event
+    res.status(200).end();
+});  
+
+app.get('/data', (req, res) => {
+    // Check the 'Accept' header
+    const acceptHeader = req.get('Accept');
+  
+    // Handle JSON requests
+    if (acceptHeader.includes('application/json')) {
+      const jsonData = { message: 'This is JSON data.' };
+      res.json(jsonData);
+    }
+    // Handle HTML requests
+    else if (acceptHeader.includes('text/html')) {
+      const htmlResponse = '<html><body><h1>This is an HTML response.</h1></body></html>';
+      res.send(htmlResponse);
+    }
+    // Handle other content types or unsupported requests
+    else {
+      res.status(406).send('Not Acceptable');
+    }
+});
+
+app.get('/profile/check-subscription', async (req, res) => {
+    try {
+        // Check the user's subscription status using the checkSubscriptionStatus function
+        const userId = req.user.id;
+        const isSubscribed = await checkSubscriptionStatus(userId);
+
+        // Determine the response format based on the "Accept" header
+        const acceptHeader = req.get('Accept');
+
+        if (acceptHeader.includes('application/json')) {
+            // Respond with JSON data
+            res.header('Content-Type', 'application/json'); // Set the Content-Type
+            res.json({ isSubscribed });
+        } else {
+            // Respond with HTML content
+            res.header('Content-Type', 'text/html'); // Set the Content-Type
+            res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+        }        
+    } catch (error) {
+        console.error('Error in /profile/check-subscription route:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 app.get('/', (req, res) => {
+    // Set a cookie with SameSite=None and Secure flag
+    res.cookie('myCookie', 'cookieValue', {
+      sameSite: 'None',
+      secure: true, // Only send over HTTPS
+    });
+  
+    // Serve your homepage.html file
     res.sendFile(path.join(__dirname, 'public', 'homepage.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html')); // Replace 'login.html' with the actual filename and path
 });
 
 app.get('/profile', isAuthenticated, async (req, res) => {
     try {
+        console.log('Request received for /profile');
+
         // Check the user's subscription status in your database
-        const userId = req.user.id; // Replace with your authentication logic
-        const isSubscribed = await checkSubscriptionStatus(userId); // Implement this function
+        const userId = req.user.id;
+        const isSubscribed = await checkSubscriptionStatus(userId);
 
-        // Set the Content-Type header to indicate that it's an HTML document
-        res.setHeader('Content-Type', 'text/html');
+        // Parse the Accept header to determine the client's preferred content type
+        const acceptHeader = req.get('Accept');
 
-
-        // Log whether the user is subscribed or not
-        if (isSubscribed) {
-            console.log('User is subscribed');
+        // Check if the client prefers JSON or has no specific preference (default to HTML)
+        if (acceptHeader.includes('application/json')) {
+            // Respond with JSON data
+            res.json({ isSubscribed }); // You can include other data as needed
         } else {
-            console.log('User is not subscribed');
+            // Respond with HTML content (assuming profile.html is in the 'public' folder)
+            if (isSubscribed) {
+                console.log('User is subscribed');
+                // Render the video for subscribed users
+                res.sendFile(path.join(__dirname, 'public', 'videos', 'cows (1080p).mp4'));
+            } else {
+                console.log('User is not subscribed');
+                // Render the user's profile without the video content
+                res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+            }
         }
-
-        // Assuming profile.html is in the 'public' folder
-        res.sendFile(path.join(__dirname, 'public', 'profile.html'));
     } catch (error) {
         console.error('Error in /profile route:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -237,7 +444,7 @@ app.post('/login', async (req, res) => {
         const user = await UserData.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+           return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -251,7 +458,7 @@ app.post('/login', async (req, res) => {
         // Set a session variable to indicate that the user is logged in
         req.session.isLoggedIn = true;
 
-        // Redirect to the profile page after successful login
+       // Redirect to the profile page after successful login
         res.redirect('/profile');
     } catch (error) {
         console.error(error);
@@ -259,12 +466,8 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
 // Logout route
-app.get('/logout', (req, res) => {
+app.post('/logout', (req, res) => {
     console.log('Logout route accessed.');
     // Clear the user's session
     // Inside the /logout route handler

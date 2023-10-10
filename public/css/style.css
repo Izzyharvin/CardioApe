@@ -1066,6 +1066,18 @@ input:focus::placeholder{
   color: white; /* Change text color on hover */
 }
 
+#video-container {
+  /* Center align the content horizontally */
+  text-align: center;
+
+  /* Center align the content vertically */
+  display: flex;
+  align-items: center;
+
+  /* Optionally, add some padding or styling */
+  padding: 20px; /* Adjust as needed */
+}
+
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
 .scrollup{
   position: fixed;
@@ -1135,7 +1147,7 @@ input:focus::placeholder{
     margin-left: 20px;
   }
 
-  #video-section video {
+  #video-container video {
     max-width: 100%;
     max-height: auto;
     padding-left: 20px;
@@ -1214,7 +1226,7 @@ input:focus::placeholder{
     padding-bottom: 40px;
   }
 
-  #video-section video {
+  #video-container video {
     max-width: 100%;
     max-height: auto;
     padding-left: 50px;
@@ -1324,7 +1336,7 @@ input:focus::placeholder{
     order: 1;
   }
 
-  #video-section video {
+  #video-container video {
     max-width: 100%;
     max-height: auto;
     padding-left: 50px;

@@ -13,6 +13,9 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Add this to your HTML file -->
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
     <!-- HEADER -->
@@ -103,23 +106,15 @@
                 </div>
             </div>
             
-            <!--Subscription Section -->
+            <!-- Subscription Section -->
             <div id="subscription-section">
                 <h1 class="content-title">Welcome to your Exercise Content!</h1>
                 <!-- Video Section -->
-                <div id="video-section">
-                    <video controls>
-                        <source src="/videos/cows (1080p).mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                <div id="video-container">
+                    <!-- Video content will be loaded here -->
+                    <video id="subscription-video" controls></video>
                 </div>
             </div>
-
-            <!-- Non-Subscription Section (Hidden by Default) -->
-            <div id="non-subscription-section" style="display: none;">
-                <p>Sorry, this section is only available to subscribed users.</p>
-            </div>
-
         </section>
     </main>
 
@@ -227,7 +222,7 @@
     </a>
 
     <!-- SCROLLREVEAL -->
-    <script src="javascript/scrollreveal.min.js"></script>
+    <script src="/javascript/scrollreveal.min.js"></script>
 
     <!-- MAIN JS -->
     <script src="/javascript/cardioape.js"></script>
@@ -241,40 +236,60 @@
     <!-- Profile Pic JS -->
     <script src="/javascript/profilepic.js"></script>
 
+    <!-- Profile Video JS -->
+    <script src="/javascript/profile.js"></script>
+
     <!-- Subscription Videos -->
     <script>
+        // Inside your Subscription Videos script tag
         document.addEventListener('DOMContentLoaded', async function () {
             // Fetch the user's subscription status from the server
-            const response = await fetch('/profile');
-            const data = await response.json();
-            const isSubscribed = data.isSubscribed;
-    
-            // Check the subscription status and add the subscription section conditionally
-            const subscriptionSection = document.getElementById('subscription-section');
-            if (isSubscribed) {
-                // User is subscribed, so add the subscription section
-                subscriptionSection.innerHTML = `
-                    <!-- Your subscription content here -->
-                    <h2>Subscription Content</h2>
-                    <p>Welcome to the premium section with exclusive content!</p>
-                    <!-- Add your subscription videos, etc. here -->
-                `;
-            } else {
-                // User is not subscribed, so you can hide or show a message
-                subscriptionSection.innerHTML = `
-                    <p>You are not subscribed. Subscribe to access premium content.</p>
-                    <a href="/pricing">Subscribe Now</a>
-                `;
+            try {
+                const response = await fetch('/profile');
+                const contentType = response.headers.get('Content-Type');
+
+                if (contentType && contentType.includes('application/json')) {
+                    // Parse JSON response
+                    const data = await response.json();
+                    const isSubscribed = data.isSubscribed;
+
+                    // Check the subscription status and update the UI
+                    const subscriptionSection = document.getElementById('subscription-section');
+                    const nonSubscriptionSection = document.getElementById('non-subscription-section');
+
+                    if (isSubscribed) {
+                        // User is subscribed, show the subscription section and hide the non-subscription section
+                        subscriptionSection.style.display = 'block';
+                        nonSubscriptionSection.style.display = 'none';
+                    } else {
+                        // User is not subscribed, hide the subscription section and show the non-subscription section
+                        subscriptionSection.style.display = 'none';
+                        nonSubscriptionSection.style.display = 'block';
+                    }
+                } else {
+                    console.error('Unexpected Content-Type:', contentType);
+                }
+            } catch (error) {
+                console.error('Error fetching subscription status:', error);
             }
         });
     </script>
 
+
+    <script>
+        // Initialize Stripe.js with your Publishable Key
+        const stripe = Stripe('pk_test_51Nf6REK7KORITv4A9iGHDRV6tyE20MD5PfiaAg2iKkL1SatUYNKEf8tIddWsu3vpWaymGUcaFP4fSst9fHLvGVSP00TbmjBjYX');
+
+        // Use stripe object to securely collect payment details
+    </script>
+
+
     <!-- Listen to Login -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const isLoggedIn = `<%= JSON.stringify(req.session.isLoggedIn) %>`;
+            const isSubscribed = `<%= JSON.stringify(req.user.subscriptionStatus) %>`;
      
-            if (!isLoggedIn) {
+            if (!isSubscribed) {
                 // If the user is not logged in, redirect to the login page
                 window.location.href = '/login';
             }
