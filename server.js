@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoDBStore = require('connect-mongodb-session')(session);
-const config = require('./config/config.js'); // Use forward slashes
+const config = require('./config/config.js');
 
 
 
@@ -35,8 +35,6 @@ app.use(flash());
 
 app.set('view engine', 'ejs'); // Set EJS as the view engine
 app.set('views', path.join(__dirname, 'views')); // Specify the directory where your views are located
-
-const stripe = require('stripe')(config.stripe.secretKey);
 
 // Parse JSON payloads from Stripe webhooks
 app.use('/stripe-webhook', bodyParser.raw({ type: 'application/json' }));
@@ -147,20 +145,7 @@ async function connect() {
     }
 }
 
-async function checkSubscriptionStatus(userId) {
-    console.log('Checking subscription status for userId:', userId);
-    try {
-        const user = await UserData.findById(userId);
-        if (!user) {
-            // Handle the case where the user is not found
-            return false; // Assuming false means not subscribed
-        }
-        return user.subscriptionStatus; // Return the user's subscription status
-    } catch (error) {
-        console.error('Error checking subscription status:', error);
-        return false; // Return false in case of an error
-    }
-}
+const stripe = require('stripe')(config.stripe.secretKey);
 
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
@@ -172,41 +157,41 @@ const User = mongoose.model('User', userSchema);
 app.use(router);
 
 
-// Import Stripe and configure it with your secret key
-const stripeInstance = require('stripe')(config.stripe.secretKey);
-
 // Define a function to retrieve the user's subscription status
 async function checkSubscriptionStatus(email) {
     try {
-      // Retrieve the customer from Stripe using the email as a unique identifier
-      const customers = await stripe.customers.list({
-        email: email,
-        limit: 1,
-      });
-  
-      // Check if a customer with the given email exists in Stripe
-      if (customers.data.length === 1) {
-        // Customer found, now retrieve their subscription status
-        const customer = customers.data[0];
-  
-        // Check if the customer has an active subscription
-        if (customer.subscriptions.data.length > 0 && customer.subscriptions.data[0].status === 'active') {
-          console.log('User is subscribed.');
-          // Show or enable content for subscribed users
-          return true; // Return true for subscribed users
+        // Log the input email for debugging
+        console.log('Checking subscription status for email:', email);
+        
+        // Retrieve the customer from Stripe using the email as a unique identifier
+        const customers = await stripe.customers.list({
+            email: email,
+            limit: 1,
+        });
+    
+        // Check if a customer with the given email exists in Stripe
+        if (customers.data.length === 1) {
+            // Customer found, now retrieve their subscription status
+            const customer = customers.data[0];
+    
+            // Check if the customer has an active subscription
+            if (customer.subscriptions.data.length > 0 && customer.subscriptions.data[0].status === 'active') {
+                console.log('User is subscribed.');
+                // Show or enable content for subscribed users
+                return true; // Return true for subscribed users
+            } else {
+                console.log('User is not subscribed.');
+                // Display a message or alternative content for non-subscribed users
+                return false; // Return false for non-subscribed users
+            }
         } else {
-          console.log('User is not subscribed.');
-          // Display a message or alternative content for non-subscribed users
-          return false; // Return false for non-subscribed users
+            console.log('User is not found in Stripe.');
+            // Handle the case where the user is not found in Stripe
+            return false; // Return false for users not found in Stripe
         }
-      } else {
-        console.log('User is not found in Stripe.');
-        // Handle the case where the user is not found in Stripe
-        return false; // Return false for users not found in Stripe
-      }
     } catch (error) {
-      console.error('Error checking subscription status:', error);
-      return false; // Return false in case of an error
+        console.error('Error checking subscription status:', error);
+        return false; // Return false in case of an error
     }
 }
 
@@ -348,6 +333,38 @@ app.get('/profile/check-subscription', async (req, res) => {
     }
 });
 
+app.get('/check-subscription-status', async (req, res) => {
+    // Extract the user's email from the request
+    const userEmail = req.query.email; // You may use a different way to pass the email
+
+    if (!userEmail) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+
+    try {
+        // Find the user in your database by their email
+        const user = await UserData.findOne({ email: userEmail });
+
+        if (user) {
+            // Check the subscription status in Stripe using the user's email
+            const stripeCustomer = await stripe.customers.retrieve(user.email);
+
+            // Check the subscription status using the Stripe customer object
+            // You may need to modify this part based on your Stripe subscription setup
+            if (stripeCustomer.subscriptions && stripeCustomer.subscriptions.data.length > 0) {
+                return res.status(200).json({ message: `User with email ${userEmail} is subscribed` });
+            } else {
+                return res.status(200).json({ message: `User with email ${userEmail} is not subscribed` });
+            }
+        } else {
+            return res.status(404).json({ message: `User not found for email: ${userEmail}` });
+        }
+    } catch (error) {
+        console.error('Error checking subscription status:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 app.get('/', (req, res) => {
     // Set a cookie with SameSite=None and Secure flag
@@ -424,9 +441,22 @@ app.post('/signup', async (req, res) => {
             return; // Add a return statement to exit the function
         }
 
+        // Create a customer in Stripe with the user's email
+        const stripeCustomer = await stripe.customers.create({
+            email: email, // Use the email from the form data
+        });
+
+        // Hash the user's password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new UserData({ name, email, password: hashedPassword });
+        // Create a new user in your database and associate the Stripe customer ID
+        const newUser = new UserData({
+            name,
+            email,
+            password: hashedPassword,
+            customerId: stripeCustomer.id, // Store the Stripe customer ID
+        });
+
         await newUser.save();
 
         // Redirect to the profile page after successful registration
