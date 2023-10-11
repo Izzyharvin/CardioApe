@@ -2,42 +2,27 @@ document.addEventListener('DOMContentLoaded', async function () {
     const videoContainer = document.getElementById('video-container');
     const video = document.getElementById('subscription-video');
 
-    // Make an AJAX request to the server to check the subscription status
     try {
         const response = await fetch('/profile/check-subscription', {
             method: 'GET',
             headers: {
-                'Accept': 'application/json', // For JSON response
-            },  
-        });
+                'Accept': 'application/json',
+            },
+        });        
 
         if (response.ok) {
-            const contentType = response.headers.get('content-type');
-            if (contentType.includes('application/json')) {
-                // Handle JSON response
-                const data = await response.json();
-                const isSubscribed = data.isSubscribed;
-                // Your JSON response handling logic here
-                if (isSubscribed) {
-                    // Load the subscribed user's video content
-                    video.src = '/public/videos/cows (1080p).mp4'; // Set the video source
-                    video.controls = true; // Show video controls (play, pause, volume, etc.)
-                    videoContainer.style.display = 'block'; // Show the video container
-                } else {
-                    // Check if videoContainer exists before setting innerHTML
-                    if (videoContainer) {
-                        // Display a message or alternative content for non-subscribed users
-                        videoContainer.innerHTML = '<p>Sorry, this video is only available to subscribed users.</p>';
-                        videoContainer.style.display = 'block'; // Show the message
-                    } else {
-                        console.error('videoContainer not found.');
-                    }
-                }
+            const data = await response.json();
+            const isSubscribed = data.isSubscribed;
+
+            if (isSubscribed) {
+                // Load the subscribed user's video content
+                video.src = '/videos/video.mp4';
+                video.controls = true;
+                videoContainer.style.display = 'block';
             } else {
-                // Handle HTML response
-                const htmlContent = await response.text();
-                // Your HTML response handling logic here
-                // ...
+                // Display a message for non-subscribed users
+                videoContainer.innerHTML = '<p>Sorry, this video is only available to subscribed users.</p>';
+                videoContainer.style.display = 'block';
             }
         } else {
             console.error('Failed to fetch subscription status');
@@ -46,3 +31,53 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.error('Error fetching subscription status:', error);
     }
 });
+
+
+//document.addEventListener('DOMContentLoaded', async function () {
+//    const videoContainer = document.getElementById('video-container');
+//    const video = document.getElementById('subscription-video');
+
+//    try {
+//        const response = await fetch('/profile/check-subscription', {
+//            method: 'GET',
+//            headers: {
+//                'Accept': 'application/json',
+//            },
+//        });
+
+//        if (response.ok) {
+//            const data = await response.json();
+//            const isSubscribed = data.isSubscribed;
+
+//            if (isSubscribed) {
+//                // Load the subscribed user's video content
+//                video.src = '/videos/video.mp4';
+//                video.controls = true;
+//                videoContainer.style.display = 'block';
+//            } else {
+                // Display a message for non-subscribed users
+//                videoContainer.innerHTML = '<p>Sorry, this video is only available to subscribed users.</p>';
+//                videoContainer.style.display = 'block';
+//            }
+//        } else {
+//            console.error('Failed to fetch subscription status');
+//        }
+//    } catch (error) {
+//        console.error('Error fetching subscription status:', error);
+//    }
+//});
+
+// Assuming you have a global variable 'isSubscribed' that holds the subscription status
+// This variable can be set in your server-side route handler
+
+//document.addEventListener('DOMContentLoaded', function () {
+//    const videoContainer = document.getElementById('video-container');
+
+//    if (isSubscribed) {
+        // Load the subscribed user's video content
+//        videoContainer.innerHTML = '<iframe src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>';
+//    } else {
+        // Display a message or alternative content for non-subscribed users
+//        videoContainer.innerHTML = '<p>Sorry, this video is only available to subscribed users.</p>';
+//    }
+//});
