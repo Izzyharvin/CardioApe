@@ -690,7 +690,15 @@ img {
 }
 
 .calculate__form .button {
-  margin-top: 1.5rem;
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.calculate__form .button:hover {
+  background-color: var(--button-bg-color-hover);
+  color: var(--button-text-color-hover);
 }
 
 .calculate__img {
@@ -701,7 +709,13 @@ img {
 .calculate__message {
   position: absolute;
   transform: translateY(1rem);
-  display: none; /* Initially hide the element */
+  display: none;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid var(--message-border-color);
+  background-color: var(--message-bg-color);
+  color: var(--message-text-color);
 }
 
 /*---------------------------/////////// XIII. FOOTER /////////// ---------------------------*/
@@ -1078,6 +1092,10 @@ input:focus::placeholder{
   padding: 20px; /* Adjust as needed */
 }
 
+#video-container video {
+  margin: 10px; /* Add space around each video element */
+}
+
 /*---------------------------/////////// SCROLL UP /////////// ---------------------------*/
 .scrollup{
   position: fixed;
@@ -1152,6 +1170,10 @@ input:focus::placeholder{
     max-height: auto;
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  #video-container {
+    flex-direction: column; /* Stack videos on top of each other */
   }
 }
 
@@ -1231,6 +1253,10 @@ input:focus::placeholder{
     max-height: auto;
     padding-left: 50px;
     padding-right: 50px;
+  }
+
+  #video-container {
+    flex-direction: column; /* Display videos side by side */
   }
 }
 
@@ -1342,6 +1368,10 @@ input:focus::placeholder{
     padding-left: 50px;
     padding-right: 50px;
   }
+
+  #video-container {
+    flex-direction: column; /* Stack videos on top of each other */
+  }
 }
 
 @media screen and (min-width: 1150px) {
@@ -1438,5 +1468,9 @@ input:focus::placeholder{
 
   .scrollup {
     right: 3rem;
+  }
+
+  #video-container {
+    flex-direction: column; /* Display videos side by side */
   }
 }
