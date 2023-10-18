@@ -12,6 +12,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoDBStore = require('connect-mongodb-session')(session);
 const config = require('./config/config.js');
+const morgan = require('morgan');
 
 
 
@@ -32,6 +33,8 @@ app.use(
 );
 
 app.use(flash());
+
+app.use(morgan('combined'));
 
 app.set('view engine', 'ejs'); // Set EJS as the view engine
 app.set('views', path.join(__dirname, 'views')); // Specify the directory where your views are located
@@ -159,40 +162,40 @@ app.use(router);
 
 // Define a function to retrieve the user's subscription status
 async function checkSubscriptionStatus(email) {
-    try {
-        // Log the input email for debugging
-        console.log('Checking subscription status for email:', email);
-        
-        // Retrieve the customer from Stripe using the email as a unique identifier
-        const customers = await stripe.customers.list({
-            email: email,
-            limit: 1,
-        });
-    
-        // Check if a customer with the given email exists in Stripe
-        if (customers.data.length === 1) {
-            // Customer found, now retrieve their subscription status
-            const customer = customers.data[0];
-    
-            // Check if the customer has an active subscription
-            if (customer.subscriptions.data.length > 0 && customer.subscriptions.data[0].status === 'active') {
-                console.log('User is subscribed.');
-                // Show or enable content for subscribed users
-                return true; // Return true for subscribed users
-            } else {
-                console.log('User is not subscribed.');
-                // Display a message or alternative content for non-subscribed users
-                return false; // Return false for non-subscribed users
-            }
-        } else {
-            console.log('User is not found in Stripe.');
-            // Handle the case where the user is not found in Stripe
-            return false; // Return false for users not found in Stripe
-        }
-    } catch (error) {
-        console.error('Error checking subscription status:', error);
-        return false; // Return false in case of an error
-    }
+  try {
+      // Log the input email for debugging
+      console.log('Checking subscription status for email:', email);
+      
+      // Retrieve the customer from Stripe using the email as a unique identifier
+      const customers = await stripe.customers.list({
+          email: email,
+          limit: 1,
+      });
+  
+      // Check if a customer with the given email exists in Stripe
+      if (customers.data.length === 1) {
+          // Customer found, now retrieve their subscription status
+          const customer = customers.data[0];
+  
+          // Check if the customer has an active subscription
+          if (customer.subscriptions.data.length > 0 && customer.subscriptions.data[0].status === 'active') {
+              console.log('User is subscribed.');
+              // Show or enable content for subscribed users
+              return true; // Return true for subscribed users
+          } else {
+              console.log('User is not subscribed.');
+              // Display a message or alternative content for non-subscribed users
+              return false; // Return false for non-subscribed users
+          }
+      } else {
+          console.log('User is not found in Stripe.');
+          // Handle the case where the user is not found in Stripe
+          return false; // Return false for users not found in Stripe
+      }
+  } catch (error) {
+      console.error('Error checking subscription status:', error);
+      return false; // Return false in case of an error
+  }
 }
 
 app.post('/stripe-webhook', async (req, res) => {
@@ -200,91 +203,48 @@ app.post('/stripe-webhook', async (req, res) => {
     let event;
   
     try {
-        event = stripeInstance.webhooks.constructEvent(req.body, sig, config.stripe.webhookSecret);
+      event = stripe.webhooks.constructEvent(req.rawBody, sig, config.stripe.webhookKey);
+      // event = stripeInstance.webhooks.constructEvent(req.body, sig, config.stripe.webhookSecret);
     } catch (err) {
-        console.error('Webhook signature verification failed.', err);
-        return res.status(400).end();
+      console.error('Webhook signature verification failed.', err);
+      return res.status(400).end();
     }
-  
-    // Declare customerId outside the switch statement
-    let customerId;
-  
+    
+    // Extract the email from the event
+    const email = event.data.object.customer_email;
+    
+    console.log('Received Stripe Event:', event);
+
     // Handle the event based on its type
     switch (event.type) {
       case 'customer.subscription.created':
-        // Extract the customer ID from the subscription event
-        customerId = event.customer;
-  
         try {
-          // Find the user in your database by their customer ID
-          const user = await UserData.findOne({ customerId });
-  
-          if (user) {
-            // Update the user's subscription status to true
-            user.subscriptionStatus = true;
-  
-            // Save the updated user record back to the database
-            await user.save();
-  
-            console.log(`Subscription created for user with customerId: ${customerId}`);
-          } else {
-            console.log(`User not found for customerId: ${customerId}`);
-          }
+          // You can now use this 'email' to identify the user in your system
+          console.log(`Subscription created for user with email: ${email}`);
         } catch (error) {
           console.error('Error handling subscription created event:', error);
         }
         break;
       case 'customer.subscription.updated':
-        // Extract the customer ID and new subscription status from the event
-        customerId = event.customer;
-        const newSubscriptionStatus = event.data.object.status === 'active'; // Adjust this based on Stripe's status values
-  
         try {
-          // Find the user in your database by their customer ID
-          const user = await UserData.findOne({ customerId });
-  
-          if (user) {
-            // Update the user's subscription status based on the new status
-            user.subscriptionStatus = newSubscriptionStatus;
-  
-            // Save the updated user record back to the database
-            await user.save();
-  
-            console.log(`Subscription updated for user with customerId: ${customerId}`);
-          } else {
-            console.log(`User not found for customerId: ${customerId}`);
-          }
+          // You can now use this 'email' to identify the user in your system
+          console.log(`Subscription updated for user with email: ${email}`);
         } catch (error) {
           console.error('Error handling subscription updated event:', error);
         }
         break;
       case 'customer.subscription.deleted':
-        // Extract the customer ID from the event
-        customerId = event.customer;
-  
         try {
-          // Find the user in your database by their customer ID
-          const user = await UserData.findOne({ customerId });
-  
-          if (user) {
-            // Update the user's subscription status to indicate they are no longer subscribed
-            user.subscriptionStatus = false;
-  
-            // Save the updated user record back to the database
-            await user.save();
-  
-            console.log(`Subscription deleted for user with customerId: ${customerId}`);
-          } else {
-            console.log(`User not found for customerId: ${customerId}`);
-          }
+          // You can now use this 'email' to identify the user in your system
+          console.log(`Subscription deleted for user with email: ${email}`);
         } catch (error) {
           console.error('Error handling subscription deleted event:', error);
         }
         break;
       default:
         // Handle other webhook events or ignore them
+        console.log(`Unhandled event type ${event.type}`);
     }
-  
     // Return a 200 OK response to acknowledge receipt of the event
     res.status(200).end();
 });  
@@ -401,7 +361,7 @@ app.get('/profile', isAuthenticated, async (req, res) => {
             if (isSubscribed) {
                 console.log('User is subscribed');
                 // Render the video for subscribed users
-                res.sendFile(path.join(__dirname, 'public', 'videos', 'cows (1080p).mp4'));
+                res.sendFile(path.join(__dirname, 'public', 'videos', 'exercise1.mp4', 'exercise2.mp4'));
             } else {
                 console.log('User is not subscribed');
                 // Render the user's profile without the video content
@@ -459,6 +419,9 @@ app.post('/signup', async (req, res) => {
 
         await newUser.save();
 
+        // After successful login or registration
+        req.session.userEmail = email; // Store the user's email in the session
+
         // Redirect to the profile page after successful registration
         res.redirect('/profile');
     } catch (error) {
@@ -484,6 +447,9 @@ app.post('/login', async (req, res) => {
         }
 
         req.session.user = user;
+
+        // After a successful login, store the user's email in the session
+        req.session.userEmail = user.email; // Store the user's email in the session
 
         // Set a session variable to indicate that the user is logged in
         req.session.isLoggedIn = true;
