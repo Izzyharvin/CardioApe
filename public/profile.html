@@ -42,7 +42,7 @@
                         
                         
                         <div class="nav__link">
-                            <a href="#footer" class="button nav__button">
+                            <a href="login.html" class="button nav__button">
                                 Sign Up Now
                             </a>
                         </div>
@@ -66,14 +66,14 @@
         <section class="profile_section" id="profile">
             <div class="left-content">
                 <div class="profile-container">
-                    <div class="profile">
+                    <!-- <div class="profile">
                         <img id="profile-image" src="/images/default_profilepic.jpg" alt="Profile Picture">
                     </div>
                     
                     <input type="file" id="file-input" accept="image/*" style="display: none;">
-                    <label for="file-input" id="upload-label">Change Profile Picture</label>
+                    <label for="file-input" id="upload-label">Change Profile Picture</label> -->
 
-                    <h1>Welcome to Your Profile</h1>
+                    <h1>Welcome to Your Profile!</h1>
                     <!-- Display user information here -->
                     
                     <a href="/login" id="logout-link">Logout</a>
@@ -300,6 +300,27 @@
                 window.location.href = '/login';
             }
         });
-    </script>  
+    </script>
+
+    <script>
+        // Make a fetch request to check the subscription status
+        fetch('/profile/check-subscription')
+            .then(response => response.json())
+            .then(data => {
+                const isSubscribed = data.isSubscribed;
+                // Now you can use isSubscribed to determine whether to display the video or not
+                if (isSubscribed) {
+                    // Display the video
+                    document.getElementById('video-container').style.display = 'block';
+                } else {
+                    // Display a message for non-subscribed users
+                    document.getElementById('subscription-section').innerHTML = '<p>Sorry, this video is only available to subscribed users.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching subscription status:', error);
+            });
+    </script>
+
 </body>
 </html>

@@ -269,10 +269,23 @@ app.get('/data', (req, res) => {
     }
 });
 
+// Create an API endpoint to check the subscription status
+app.get('/api/check-subscription', (req, res) => {
+  // Replace this with your authentication and database logic
+  const userEmail = req.user.email; // Adjust based on how you identify the user
+  const isSubscribed = true; // Replace with logic to check subscription status
+
+  // Respond with the subscription status
+  res.json({ isSubscribed });
+});
+
 app.get('/profile/check-subscription', async (req, res) => {
     try {
+      console.log('Checking subscription status for email:', req.user.email);
+      const userId = req.user.id;
+      console.log('Checking subscription status for ID:', userId);
+
         // Check the user's subscription status using the checkSubscriptionStatus function
-        const userId = req.user.id;
         const isSubscribed = await checkSubscriptionStatus(userId);
 
         // Determine the response format based on the "Accept" header
@@ -281,7 +294,7 @@ app.get('/profile/check-subscription', async (req, res) => {
         if (acceptHeader.includes('application/json')) {
             // Respond with JSON data
             res.header('Content-Type', 'application/json'); // Set the Content-Type
-            res.json({ isSubscribed });
+            res.status(200).json({ isSubscribed });
         } else {
             // Respond with HTML content
             res.header('Content-Type', 'text/html'); // Set the Content-Type
@@ -342,36 +355,36 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/profile', isAuthenticated, async (req, res) => {
-    try {
-        console.log('Request received for /profile');
+  try {
+      console.log('Request received for /profile');
 
-        // Check the user's subscription status in your database
-        const userId = req.user.id;
-        const isSubscribed = await checkSubscriptionStatus(userId);
+      // Check the user's subscription status in your database
+      const userId = req.user.id;
+      const isSubscribed = await checkSubscriptionStatus(userId);
 
-        // Parse the Accept header to determine the client's preferred content type
-        const acceptHeader = req.get('Accept');
+      // Parse the Accept header to determine the client's preferred content type
+      const acceptHeader = req.get('Accept');
 
-        // Check if the client prefers JSON or has no specific preference (default to HTML)
-        if (acceptHeader.includes('application/json')) {
-            // Respond with JSON data
-            res.json({ isSubscribed }); // You can include other data as needed
-        } else {
-            // Respond with HTML content (assuming profile.html is in the 'public' folder)
-            if (isSubscribed) {
-                console.log('User is subscribed');
-                // Render the video for subscribed users
-                res.sendFile(path.join(__dirname, 'public', 'videos', 'exercise1.mp4', 'exercise2.mp4'));
-            } else {
-                console.log('User is not subscribed');
-                // Render the user's profile without the video content
-                res.sendFile(path.join(__dirname, 'public', 'profile.html'));
-            }
-        }
-    } catch (error) {
-        console.error('Error in /profile route:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+      // Check if the client prefers JSON or has no specific preference (default to HTML)
+      if (acceptHeader.includes('application/json')) {
+          // Respond with JSON data
+          res.json({ isSubscribed }); // You can include other data as needed
+      } else {
+          // Respond with HTML content (assuming profile.html is in the 'public' folder)
+          if (isSubscribed) {
+              console.log('User is subscribed');
+              // Render the video for subscribed users
+              res.sendFile(path.join(__dirname, 'public', 'videos', 'exercise1.mp4', 'exercise2.mp4'));
+          } else {
+              console.log('User is not subscribed');
+              // Render the user's profile without the video content
+              res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+          }
+      }
+  } catch (error) {
+      console.error('Error in /profile route:', error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 app.post('/login', passport.authenticate('local', {
