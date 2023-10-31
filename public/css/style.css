@@ -59,6 +59,7 @@ Table of contents
   /*.5rem = 8px | 1rem = 16px*/
   --body-font: 'Oswald', sans-serif;
   --second-font: 'Caprasimo', cursive;
+  --third-font: 'Times New Roman', Times, serif;
   --biggest-font-size: 2rem;
   --bigger-font-size: 1.5rem;
   --big-font-size: 1.25rem;
@@ -985,8 +986,8 @@ input:focus::placeholder{
   color: rgb(255, 255, 255);
   display: block;
   margin: 30px auto;
-  text-decoration: underline; /* Add underline to the link */
-  color: blue; 
+  /*text-decoration: underline;*/ /* Add underline to the link */
+  color: white; 
 }
 
 .link:hover{
